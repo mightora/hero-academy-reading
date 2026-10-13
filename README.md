@@ -46,7 +46,13 @@ Up to eight nickname profiles are stored in this browser's local storage. Export
 
 ## Static hosting
 
-Publish `dist/` with GitHub Pages, Azure Static Web Apps or another static host. All asset paths are relative, supporting repository subpaths. HTTPS enables service-worker offline caching after the initial visit. This repository does not activate a hosting deployment.
+Publish `dist/` with GitHub Pages, Azure Static Web Apps or another static host. All asset paths are relative, supporting repository subpaths. HTTPS enables service-worker offline caching after the initial visit. The **Deploy to GitHub Pages** workflow runs on every push to `main`, checks tests and JavaScript syntax, then uploads and deploys `dist/`. Pull requests run tests without publishing. You can also run the deployment manually from Actions.
+
+In **Settings → Pages → Build and deployment**, select **GitHub Actions** as the source. GitHub must have Pages enabled for the workflow to deploy. The workflow publishes only the app directory, not the repository documentation.
+
+Default site URL: https://mightora.github.io/hero-academy-reading/
+
+See the workflow's deployment environment for the confirmed live URL, including any custom domain configured in repository settings.
 
 ## Source
 
