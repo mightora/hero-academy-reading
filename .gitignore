@@ -1,0 +1,6 @@
+node_modules/
+.openai/
+.sites-runtime/
+.sites-checkout/
+.DS_Store
+*.tar.gz
