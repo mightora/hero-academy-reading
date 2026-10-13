@@ -28,6 +28,10 @@ The first ten quests alternate listening-to-word choices, building words from au
 
 Movement is a simple point-and-click system, not a collision-based platformer. Reading quests use a shared rescue scene. Future chapters displayed on the roadmap are not playable.
 
+## Level shortcuts
+
+Choose **Code** on the adventure screen to open any level using `HERO01` through `HERO12`. See [LEVEL_CODES.md](LEVEL_CODES.md) for the complete table. A shortcut does not mark earlier levels complete or grant skipped rewards.
+
 ## Accessibility and support
 
 Picture-led controls, short labels, on-demand device speech, slow replay, keyboard/touch support, adjustable reading text, reduced animation and phone safe-area layouts are included. There are no compulsory timers, lost lives or rankings.
@@ -69,6 +73,10 @@ This prototype is not a validated dyslexia intervention or an educator-approved 
 Whole-word speech is included. Reviewed recordings of individual phonemes/blending are **not** included. General text-to-speech must not be used as an authoritative phonics sound model.
 
 Browser visual testing remains outstanding. The working product name has not been trade-mark cleared. No open-source licence has been selected yet.
+
+## Brand and design
+
+Read [BRAND.md](BRAND.md) before building another Hero Academy app. It defines the shared identity, colours, characters, illustration style, components, voice, phone layouts and accessibility conventions, with a reusable project brief.
 
 ## Contributions
 

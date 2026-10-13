@@ -1,0 +1,2 @@
+export function levelFromCode(value){if(typeof value!=='string'||value.length>30)return null;const clean=value.trim().toUpperCase().replace(/[\s-]/g,'');if(!/^HERO(0[1-9]|1[0-2])$/.test(clean))return null;return Number(clean.slice(4));}
+export function codeForLevel(level){if(!Number.isInteger(level)||level<1||level>12)throw Error('Level must be between 1 and 12.');return 'HERO'+String(level).padStart(2,'0');}

@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {levelFromCode,codeForLevel} from '../dist/codes.js';import {freshProfile} from '../dist/state.js';
+test('All twelve codes map to the correct level and accept lowercase, spaces and hyphens',()=>{for(let id=1;id<=12;id++){const code=codeForLevel(id);assert.equal(levelFromCode(code),id);assert.equal(levelFromCode('  '+code.toLowerCase()+'  '),id);assert.equal(levelFromCode(code.slice(0,4)+'-'+code.slice(4)),id);}});
+test('Invalid level codes are rejected rather than coercing arbitrary input',()=>{for(const input of ['HERO00','HERO13','HERO1','HERO99','TEST01','HERO01extra','HERO01!',null,1])assert.equal(levelFromCode(input),null);assert.throws(()=>codeForLevel(13));});
+test('Resolving a shortcut does not grant level completion or rewards',()=>{const p=freshProfile(),before=JSON.stringify(p);assert.equal(levelFromCode('HERO12'),12);assert.equal(JSON.stringify(p),before);});
