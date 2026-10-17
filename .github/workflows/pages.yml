@@ -32,6 +32,10 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload game files
+        - name: Bundle shared Mightora footer
+          uses: mightora/shared-ui/.github/actions/sync-footer@main
+          with:
+            output-directory: dist
         uses: actions/upload-pages-artifact@v4
         with:
           path: dist
