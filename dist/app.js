@@ -96,7 +96,7 @@ function updateSoundStatus(){const el=document.getElementById('sound-pack-status
 function bindSounds(){
  updateSoundStatus();let pending=null,recorder=null,stream=null,chunks=[],pendingId=null,recordTimer=null;
  const status=document.getElementById('sound-recording-status'),record=document.getElementById('record-sound'),select=document.getElementById('sound-select');
- const cleanup=()=>{clearTimeout(recordTimer);if(recorder?.state==='recording'){recorder.onstop=null;recorder.stop();}stream?.getTracks().forEach(t=>t.stop());stream=null;previewSoundPlayer?.stop();};recordingCleanup=cleanup;
+ const cleanup=()=>{clearTimeout(recordTimer);if(recorder){recorder.onstop=null;recorder.onerror=null;if(recorder.state==='recording')recorder.stop();}stream?.getTracks().forEach(t=>t.stop());stream=null;previewSoundPlayer?.stop();};recordingCleanup=cleanup;
  const busy=value=>{select.disabled=value;for(const id of ['preview-sound','save-sound','remove-sound','sound-file'])document.getElementById(id).disabled=value;};
  select.onchange=()=>{pending=null;pendingId=null;status.textContent='';soundPlayer.stop();previewSoundPlayer?.stop();};
  document.getElementById('sound-file').onchange=e=>{try{pending=validateClip(e.target.files?.[0]);pendingId=select.value;status.textContent='Ready to preview. Check the sound before choosing Use recording.';}catch(err){pending=null;status.textContent=err.message;}};
