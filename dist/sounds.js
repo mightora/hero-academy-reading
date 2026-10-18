@@ -1,0 +1,13 @@
+// Only adult-supplied recordings are used for individual phonics sounds.
+export const soundId=g=>({ck:'k',ll:'l',ss:'s',ff:'f',c:'k'}[g]||g);
+export const soundGuides={a:'a as in cat',b:'b as in bag',ch:'ch as in chick',d:'d as in dog',e:'e as in pen',f:'f as in fish',g:'g as in dog',h:'h as in hand',i:'i as in pin',k:'k as in cat',l:'l as in lamp',m:'m as in map',n:'n as in net',o:'o as in pot',p:'p as in pin',r:'r as in red',s:'s as in sun',sh:'sh as in ship',t:'t as in tin',u:'u as in cup'};
+export const soundIds=Object.keys(soundGuides).sort();
+export function validateClip(blob){if(!blob||!blob.type?.startsWith('audio/')||!blob.size||blob.size>2e6)throw Error('Choose an audio recording smaller than 2 MB.');return blob;}
+function database(){return new Promise((resolve,reject)=>{const r=indexedDB.open('hero-academy-sounds',1);r.onupgradeneeded=()=>r.result.createObjectStore('clips');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+export async function loadSoundClips(){const db=await database();return new Promise((resolve,reject)=>{const tx=db.transaction('clips'),all=new Map(),r=tx.objectStore('clips').openCursor();r.onsuccess=()=>{const c=r.result;if(c){if(soundIds.includes(c.key))all.set(c.key,c.value);c.continue();}};tx.oncomplete=()=>{db.close();resolve(all);};tx.onerror=()=>{db.close();reject(tx.error);};});}
+export async function saveSoundClip(id,blob){if(!soundIds.includes(id))throw Error('Unknown sound.');if(blob)validateClip(blob);const db=await database();return new Promise((resolve,reject)=>{const tx=db.transaction('clips','readwrite');if(blob)tx.objectStore('clips').put(blob,id);else tx.objectStore('clips').delete(id);tx.oncomplete=()=>{db.close();resolve();};tx.onerror=()=>{db.close();reject(tx.error);};});}
+export function createSoundPlayer(host,clips){let current=null,url=null,serial=0;
+ function stop(){serial++;if(current){current.onended=null;current.onerror=null;current.pause();current=null;}if(url){host.URL.revokeObjectURL(url);url=null;}}
+ function play(graphemes,{onStep=()=>{},onDone=()=>{},onError=()=>{}}={}){stop();const ids=graphemes.map(soundId);if(!ids.length||ids.some(id=>!clips.has(id))){onError('missing');return false;}const token=serial;let index=0;
+ const next=()=>{if(token!==serial)return;if(url){host.URL.revokeObjectURL(url);url=null;}if(index===ids.length){current=null;onDone();return;}const i=index++;url=host.URL.createObjectURL(clips.get(ids[i]));const audio=new host.Audio(url);current=audio;audio.onended=next;const failed=()=>{if(token!==serial)return;stop();onError('playback');};audio.onerror=failed;onStep(i);try{audio.play()?.catch(failed);}catch{failed();}};next();return true;}
+ return {stop,play,has:g=>clips.has(soundId(g))};}

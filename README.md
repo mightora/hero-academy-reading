@@ -87,3 +87,32 @@ Read [BRAND.md](BRAND.md) before building another Hero Academy app. It defines t
 ## Contributions
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Please report bugs and suggest improvements through the repository's Issues page.
+
+
+
+## Open levels, word progression and visual help (October 2026)
+
+Tap **Levels** in Explore to choose any of the 12 playable missions, or select any town landmark and tap Go. Skipping does not mark earlier missions complete or grant rewards. Existing saves and HERO01–HERO12 codes still work; future districts remain unavailable.
+
+| Levels | Practice |
+| --- | --- |
+| 1–6 | Three-letter short-vowel words, e.g. cat, pin, dog |
+| 7 | Four-letter words with final consonant blends, e.g. lamp, tent |
+| 8 | Four-letter words with initial blends, e.g. frog, crab |
+| 9 | Four letters with sh/ch sound teams, e.g. ship, chin |
+| 10 | Five letters including shell, chick, chest and brush |
+| 11–12 | Short stories and a finale using familiar words |
+
+This remains draft practice content requiring literacy-specialist review. Word length is not a reading-age scale: ship has four letters but three phonemes. Level choice is independent of the support setting and rewards.
+
+Each activity shows a task-specific picture sequence. **Show me** displays a worked example and records the response as supported, and Help reveals it after difficulty. Sound teams remain a single tile during building. Sounds reveals the target segmentation and therefore records the response as supported.
+
+### Individual sound audio
+
+Whole-word speech, slow replay and story-word speech remain available on demand. No specialist phonics recordings are bundled, and letter-name TTS is never substituted for phonics sounds.
+
+In **Grown-ups → Individual sounds**, choose a sound, record up to five seconds (or select an audio file under 2 MB), preview it, and choose **Use recording**. A trusted adult should model pure sounds without added “uh”; the example word is a cue and should not be recorded. Microphone access is requested only on Record. Choose Remove to delete the selected recording.
+
+Saved clips stay in IndexedDB on this device and are not sent to a server or included in progress JSON backups. Browser site-data deletion removes them. Sounds plays an available clip on tap. Blend plays the sound recordings in order, highlighting their tiles, then speaks the whole word. Missing recordings show adult help, with no fabricated audio. Locally supplied recordings need adult review and are not certified instructional audio. Regional accent differences are expected.
+
+Technical additions: dist/sounds.js provides validated clip storage and cancellable sequential playback; learning.js segments sh/ch/ck/ll as graphemes and supports the longer-word groups. The service-worker cache version is updated for the additional module.

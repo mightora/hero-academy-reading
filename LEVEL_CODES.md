@@ -20,3 +20,6 @@ Codes are case-insensitive. Spaces and a hyphen are accepted, so `hero01`, `HERO
 | `HERO12` | 12 — Academy rescue |
 
 A code opens a level even if its usual prerequisite is unfinished. It does not complete skipped levels, grant their rewards or erase progress. Completing the selected level records the actual responses and completion normally. Codes are navigation shortcuts, not authentication or proof of reading ability.
+
+
+All twelve levels are also available directly using the picture-based **Levels** picker in Explore; codes are optional. Opening a level does not award completion or skip rewards.
