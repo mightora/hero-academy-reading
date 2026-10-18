@@ -1,4 +1,5 @@
 import {levelFromCode,codeForLevel} from './codes.js';
+import {bootAcademy} from './academy-client.js';
 import {locations,treasures,ensureAdventure,clampPosition,collectNearby,landmark,terrain,avatar} from './adventure.js';
 import {wordPicture,rescueScene} from './objects.js';
 import {reviewTasks,skillSummary,groupNames,mismatchedPositions,distractorTiles} from './learning.js';
@@ -70,4 +71,15 @@ document.addEventListener('keydown',e=>{if(!modal.firstChild)return;if(e.key==='
 window.speechSynthesis?.addEventListener?.('voiceschanged',()=>{if(view==='parent')populateVoiceChoices();});
 document.addEventListener('keydown',e=>{if(view!=='map'||modal.firstChild||e.altKey||e.ctrlKey||e.metaKey||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))return;const direction={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'}[e.key];if(direction){e.preventDefault();stepHero(direction);}});
 render();if(!state.welcomed)welcome();
+await bootAcademy({
+ game:'reading',
+ identity:()=>{if(!p().academyLocalId){p().academyLocalId=crypto.randomUUID();save();}return p().academyLocalId;},
+ select:id=>{const i=state.profiles.findIndex(p=>p.academyLocalId===id);if(i<0)return false;state.active=i;save();render();return true;},
+create:hero=>{if(state.profiles.length>=8)throw Error('This device has eight heroes. Export a backup before connecting another.');const profile=freshProfile(hero.name.slice(0,24));profile.academyLocalId=crypto.randomUUID();if(colours.includes(hero.colour))profile.colour=hero.colour;if(['star','diamond','bolt'].includes(hero.emblem))profile.emblem=hero.emblem;state.profiles.push(profile);state.active=state.profiles.length-1;state.welcomed=true;save();closeDialog();render();return profile.academyLocalId;},
+ snapshot:()=>({...p(),attempts:p().attempts.slice(-300)}),
+ restore:remote=>{const id=p().academyLocalId,profile=validateSave({...state,active:0,profiles:[remote]}).profiles[0];profile.academyLocalId=id;state.profiles[state.active]=profile;save();closeDialog();render();},
+ milestones:()=>p().done.map(n=>n-1),
+ connected:()=>{state.welcomed=true;closeDialog();save();render();}
+});
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+

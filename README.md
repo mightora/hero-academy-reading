@@ -42,7 +42,7 @@ Support settings are not a reading-age assessment. Records distinguish supported
 
 ## Progress and privacy
 
-Up to eight nickname profiles are stored in this browser's local storage. Export/restore a validated JSON backup to retain practice history, position, treasures and rewards. Clearing browser storage deletes local progress. No automatic cross-device sync is included. Data is not encrypted; use nicknames rather than real names or sensitive information.
+Up to eight nickname profiles are stored in this browser's local storage. Export/restore a validated JSON backup to retain practice history, position, treasures and rewards. Clearing browser storage deletes local progress. Optional ChoreQuest central accounts synchronise the selected hero's adventure and new mission Hero XP. See [central accounts](docs/CENTRAL-ACCOUNT.md). Use nicknames rather than sensitive information.
 
 ## Static hosting
 
@@ -87,3 +87,4 @@ Read [BRAND.md](BRAND.md) before building another Hero Academy app. It defines t
 ## Contributions
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Please report bugs and suggest improvements through the repository's Issues page.
+
