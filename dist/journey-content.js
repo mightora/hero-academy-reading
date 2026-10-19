@@ -26,6 +26,10 @@ const wordSets=[
  ['rain','train','seed','green','night','light','boat','road','moon','star','coin','hair'],
  ['unhappy','replay','careful','helpful','kindness','payment','misread','sunshine','moonlight','unfair','rebuild','hopeful']
 ];
+const morphologyTiles=[
+ ['un','happy'],['re','play'],['care','ful'],['help','ful'],['kind','ness'],['pay','ment'],
+ ['mis','read'],['sun','shine'],['moon','light'],['un','fair'],['re','build'],['hope','ful']
+];
 const readingSets=[
  [
  ['Pip has a map.','Who has the map?',0],['Dot is in the shed.','Where is Dot?',0],['Pip can hop.','What can Pip do?',0],['The red bag is on the bed.','Where is the red bag?',0],
@@ -112,7 +116,7 @@ export function selectableMission(band,id){return Number.isInteger(band)&&band>=
 export const missions=bands.flatMap(b=>Array.from({length:12},(_,i)=>{
  const id=i+1,band=b.id,scene=['Restore the signal','Help the robot','Find a clue','Repair the bridge','Unlock the gate','Light the camp','Rescue a friend','Explore the caves','Restore the garden','Launch a beacon','Solve the map','Celebrate the rescue'][i];
  if(band===1)return {id,band,scene,type:'sound',target:soundTargets[i],example:'Hear the sound, then find its spelling.',visual:'👂 → 🔤 → ⚡',skill:'sound:'+soundTargets[i]};
- if(band>=2&&band<=6){const word=wordSets[band-2][i];return {id,band,scene,type:'tiles',target:word,tiles:band>=6?word.split(/(?=[aeiou])/):segmentWord(word),example:'Look at the sound spellings. Tap them in order.',visual:'👀 → ▦ → ⚡',skill:(band===6?'morphology:':'decoding:')+word};}
+ if(band>=2&&band<=6){const word=wordSets[band-2][i];return {id,band,scene,type:'tiles',target:word,tiles:band>=6?morphologyTiles[i]:segmentWord(word),example:'Look at the sound spellings. Tap them in order.',visual:'👀 → ▦ → ⚡',skill:(band===6?'morphology:':'decoding:')+word};}
  const [text,question,evidence]=readingSets[band-7][i];return {id,band,scene,type:'evidence',text,question,evidence,example:'Read. Find the words that help answer.',visual:'📖 → 🔎 → ⚡',skill:b.area+':band'+band};
 }));
 export function validateJourneyContent(){
@@ -125,6 +129,9 @@ export function validateJourneyContent(){
   if(m.type==='evidence'&&(m.evidence<0||m.evidence>=m.text.split(/(?<=[.!?])\s+/).length||!m.question))throw Error('Invalid evidence reference: '+k);
   if(m.type==='sound'&&!soundSequence.includes(m.target))throw Error('Sound not listed: '+k);
  }
+ // Every single-word phonics band is checked against its declared GPC inventory.
+ for(const m of missions.filter(x=>x.band>=2&&x.band<=5))
+  if(tokens(m.target).some(g=>!availableGpcs(m.band).has(g)))throw Error('Untaught spelling in band '+m.band+': '+m.target);
  // Band 2 is restricted to the initial eight graphemes, checked mechanically.
  for(const m of missions.filter(x=>x.band===2))if(tokens(m.target).some(g=>!availableGpcs(2).has(g)))throw Error('Undeclared initial spelling: '+m.target);
  return true;
