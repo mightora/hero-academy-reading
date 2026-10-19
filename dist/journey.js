@@ -126,8 +126,11 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
   const wordBtn=modal.querySelector('#j-word');if(wordBtn)wordBtn.onclick=()=>{heard=true;voice(m.target);};
   on('[data-pick]',b=>{selected=Number(b.dataset.pick);feedback='';drawMission();});
   on('[data-tap]',b=>{if(tapped.length<m.tiles.length){tapped.push(optionsFor(m)[Number(b.dataset.tap)]);feedback='';drawMission();}});
+  on('[data-board]',b=>{tapped=addLabCard(m,tapped,Number(b.dataset.board));feedback='';drawMission();});
+  on('[data-undo]',b=>{tapped.splice(Number(b.dataset.undo),1);feedback='';drawMission();});
+  on('[data-quote]',b=>{tapped=selectQuoteWord(tapped,Number(b.dataset.quote));feedback='';drawMission();});
   const resetBtn=modal.querySelector('#j-reset');if(resetBtn)resetBtn.onclick=()=>{tapped=[];drawMission();};
-  modal.querySelector('#j-help').onclick=()=>{help=true;model=true;feedback=m.type==='evidence'?'Look for the highlighted detail.':'Follow the example tiles.';drawMission();};
+  modal.querySelector('#j-help').onclick=()=>{help=true;model=true;feedback=m.type==='evidence'?'Look for the highlighted detail.':isLab(m)?'Follow the worked example.':'Follow the example tiles.';drawMission();};
   modal.querySelector('#j-check').onclick=check;
  }
  function playSound(grapheme){
@@ -136,9 +139,9 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
   soundPlayer.play([grapheme],{onError:()=>{help=true;feedback='🧑 Please ask a grown-up to model this sound.';drawMission();}});
  }
  function check(){
-  const m=current;const hasAnswer=m.type==='tiles'?tapped.length===m.tiles.length:selected!==null;
+  const m=current;const hasAnswer=m.type==='tiles'?tapped.length===m.tiles.length:isLab(m)?hasLabAnswer(m,tapped):selected!==null;
   if(!hasAnswer){feedback='☝ Try one first.';drawMission();return;}
-  const correct=m.type==='tiles'?tapped.every((g,i)=>g===m.tiles[i]):m.type==='sound'?optionsFor(m)[selected]===m.target:selected===m.evidence;
+  const correct=m.type==='tiles'?tapped.every((g,i)=>g===m.tiles[i]):isLab(m)?answerLab(m,tapped):m.type==='sound'?optionsFor(m)[selected]===m.target:selected===m.evidence;
   recordResponse(p(),{band:m.band,mission:m.id,type:m.type,skill:m.skill,phase:stage,correct,supported:help||model||stage==='practice'||(m.type==='sound'&&!soundPlayer.has(m.target)),audio:heard,model,session,at:Date.now()});
   save();
   if(!correct){help=true;feedback='↺ Have another go. Use Show me for a clue.';drawMission();return;}
