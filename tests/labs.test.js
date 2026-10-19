@@ -51,8 +51,8 @@ test('48 short-text applications check declared spellings and one exact target',
 });
 test('new challenge and application records survive valid backups but do not rewrite old progress',()=>{
  const s=initialState(),p=s.profiles[0];p.done=[1,7];
- recordResponse(p,{band:12,mission:2,type:'claim',phase:'apply',correct:true,supported:false,audio:false,model:false,session:'visit-a',at:Date.now()});
- recordResponse(p,{band:2,mission:1,type:'tiles',phase:'transfer',correct:true,supported:true,audio:true,model:false,session:'visit-a',at:Date.now()});
+ recordResponse(p,{band:12,mission:2,type:'claim',skill:'comprehension:claim',phase:'apply',correct:true,supported:false,audio:false,model:false,session:'visit-a',at:Date.now()});
+ recordResponse(p,{band:2,mission:1,type:'tiles',skill:'decoding:sat',phase:'transfer',correct:true,supported:true,audio:true,model:false,session:'visit-a',at:Date.now()});
  finishJourneyMission(p,12,2);
  const restored=validateSave(JSON.parse(JSON.stringify(s)));
  assert.deepEqual(restored,s);
