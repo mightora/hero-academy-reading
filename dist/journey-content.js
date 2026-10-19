@@ -1,6 +1,7 @@
 // Original, versioned Hero Academy Reading Journey content. Draft: educator review required.
 import {segmentWord} from './learning.js';
-export const CONTENT_VERSION='2026.10.19-draft1';
+import {labByKey,labKey,validateLabMissions} from './quest-labs.js';
+export const CONTENT_VERSION='2026.10.19-draft2';
 export const themes=[['robot','🤖','Robot rescue'],['explore','🧭','Exploration'],['engineering','⚙️','Engineering'],['mystery','🔎','Mysteries'],['wildlife','🦊','Wildlife'],['space','🚀','Space']];
 export const entryGroups=[['Sounds','👂',[1,2]],['Build words','🧩',[2,3,4]],['Read words','📚',[3,4,5,6]],['Read sentences','💬',[7,8]],['Read stories','📖',[8,9,10]],['Reading detective','🔎',[10,11,12]]];
 const meta=[
@@ -115,12 +116,14 @@ export function tokens(word){return segmentWord(word.toLowerCase().replace(/[^a-
 export function selectableMission(band,id){return Number.isInteger(band)&&band>=1&&band<=12&&Number.isInteger(id)&&id>=1&&id<=12;}
 export const missions=bands.flatMap(b=>Array.from({length:12},(_,i)=>{
  const id=i+1,band=b.id,scene=['Restore the signal','Help the robot','Find a clue','Repair the bridge','Unlock the gate','Light the camp','Rescue a friend','Explore the caves','Restore the garden','Launch a beacon','Solve the map','Celebrate the rescue'][i];
+ const lab=labByKey.get(labKey(band,id));
+ if(lab)return {...lab,scene:lab.scene||scene,skill:b.area+':'+lab.type};
  if(band===1)return {id,band,scene,type:'sound',target:soundTargets[i],example:'Hear the sound, then find its spelling.',visual:'👂 → 🔤 → ⚡',skill:'sound:'+soundTargets[i]};
  if(band>=2&&band<=6){const word=wordSets[band-2][i];return {id,band,scene,type:'tiles',target:word,tiles:band>=6?morphologyTiles[i]:segmentWord(word),example:'Look at the sound spellings. Tap them in order.',visual:'👀 → ▦ → ⚡',skill:(band===6?'morphology:':'decoding:')+word};}
  const [text,question,evidence]=readingSets[band-7][i];return {id,band,scene,type:'evidence',text,question,evidence,example:'Read. Find the words that help answer.',visual:'📖 → 🔎 → ⚡',skill:b.area+':band'+band};
 }));
 export function validateJourneyContent(){
- if(bands.length!==12||missions.length!==144)throw Error('Missing reading bands or missions');
+ if(bands.length!==12||missions.length!==144||validateLabMissions()!==36)throw Error('Missing reading bands or missions');
  const keys=new Set();
  for(const m of missions){
   if(!selectableMission(m.band,m.id)||!m.scene||!m.skill)throw Error('Invalid mission');
@@ -128,6 +131,7 @@ export function validateJourneyContent(){
   if(m.type==='tiles'&&(!m.tiles.length||m.tiles.join('')!==m.target))throw Error('Invalid tile segmentation: '+k);
   if(m.type==='evidence'&&(m.evidence<0||m.evidence>=m.text.split(/(?<=[.!?])\s+/).length||!m.question))throw Error('Invalid evidence reference: '+k);
   if(m.type==='sound'&&!soundSequence.includes(m.target))throw Error('Sound not listed: '+k);
+  if(['sequence','quote','compare','claim'].includes(m.type)&&!labByKey.has(labKey(m.band,m.id)))throw Error('Unknown investigation: '+k);
  }
  // Every single-word phonics band is checked against its declared GPC inventory.
  for(const m of missions.filter(x=>x.band>=2&&x.band<=5))
