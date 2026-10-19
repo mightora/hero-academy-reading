@@ -32,8 +32,9 @@ export function readingSummary(profile){
 }
 export function nextPractices(profile){
  const s=readingSummary(profile);
- const pending=s.bands.filter(x=>x.practice);
- return pending.sort((a,b)=>Number(a.band===journeyFor(profile).startBand)-Number(b.band===journeyFor(profile).startBand)).slice(-3).reverse().map(x=>x.band);
+ const current=journeyFor(profile).startBand;
+ const practised=s.bands.filter(x=>x.practice&&journeyRecords(profile).some(r=>r.band===x.band));
+ return [...new Set([current,...practised.sort((a,b)=>a.band-b.band).map(x=>x.band)])].slice(0,3);
 }
 export function suggestBand(correct){if(!Array.isArray(correct))return 2;return [2,4,8,11][Math.min(3,correct.filter(Boolean).length)];}
 const escapeHtml=value=>String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -47,7 +48,7 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
  const on=(selector,fn)=>modal.querySelectorAll(selector).forEach(el=>el.onclick=()=>fn(el));
  const voice=text=>{heard=true;say(text);};
  function landing(){
-  current=null;
+  narrator.stop();soundPlayer.stop();current=null;
   shell('Choose level',`<p class="journey-note">Pick what feels right. Every mission is open. ✨</p><div class="journey-paths"><button class="btn orange" id="pick-own">🧭 Choose myself</button><button class="btn light" id="pick-help">🔎 Help me choose</button><button class="btn light" id="pick-grown">⚙ Grown-up chooses</button></div><div class="journey-grid">${entryGroups.map(([label,icon,range])=>`<button class="journey-card" data-entry="${escapeHtml(label)}"><span class="journey-icon">${icon}</span><strong>${label}</strong><small>${range.map(i=>bands[i-1].title).join(' · ')}</small><span class="journey-example">☝ Try a sample →</span></button>`).join('')}</div><div class="journey-settings"><label>Adventure <select id="j-theme">${themes.map(t=>`<option value="${t[0]}" ${t[0]===j().theme?'selected':''}>${t[1]} ${t[2]}</option>`).join('')}</select></label><label><input id="j-calm" type="checkbox" ${j().calm?'checked':''}> Calmer explorer look</label></div><p class="journey-note">Your choice is saved for this hero. Theme and reading skills are separate.</p><button class="btn light" id="j-all">📚 All twelve bands</button><button class="btn light" id="j-resume">▶ My starting band: ${j().startBand}</button>`);
   modal.querySelector('#pick-own').onclick=allBands;modal.querySelector('#pick-help').onclick=placementIntro;modal.querySelector('#pick-grown').onclick=grown;
   modal.querySelector('#j-all').onclick=allBands;modal.querySelector('#j-resume').onclick=()=>openBand(j().startBand);
@@ -66,7 +67,7 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
   on('[data-band]',b=>openBand(Number(b.dataset.band)));
  }
  function openBand(number){
-  const b=bands[number-1];if(!b)return;
+  narrator.stop();soundPlayer.stop();const b=bands[number-1];if(!b)return;
   shell(b.title,`<p class="journey-note">${escapeHtml(b.objective)}</p><button class="btn orange" id="j-start-here">★ Make this my starting point</button><div class="journey-grid">${missions.filter(m=>m.band===number).map(m=>`<button class="journey-card" data-mission="${m.id}"><span class="journey-icon">${themes.find(t=>t[0]===j().theme)?.[1]||'🤖'}</span><strong>${m.id}. ${escapeHtml(m.scene)}</strong><small>${escapeHtml(m.type==='evidence'?m.question:m.target)}</small><span>${j().completed.includes(missionKey(number,m.id))?'✓ Replay':'▶ Go'}</span></button>`).join('')}</div><p class="journey-note">Missions and stars never complete earlier bands automatically.</p>`);
   modal.querySelector('#j-start-here').onclick=()=>{j().startBand=number;save();openBand(number);};
   on('[data-mission]',b=>start(number,Number(b.dataset.mission)));
@@ -92,7 +93,7 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
   modal.querySelector('#probe-audio').onclick=()=>voice(spoken);on('[data-probe]',b=>{placementCorrect.push(Number(b.dataset.probe)===answer);placement++;placementView();});modal.querySelector('#probe-skip').onclick=()=>{placementCorrect.push(false);placement++;placementView();};
  }
  function start(band,id){
-  if(!selectableMission(band,id))return;
+  narrator.stop();soundPlayer.stop();if(!selectableMission(band,id))return;
   current=missions.find(m=>m.band===band&&m.id===id);session=sessionId();stage='show';reset();drawMission();
  }
  function reset(){tapped=[];selected=null;help=false;heard=false;model=false;feedback='';}
@@ -147,5 +148,5 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
 export function journeyDashboard(profile){
  const j=journeyFor(profile),s=readingSummary(profile);
  const areaLabels={listening:'Listening',decoding:'Decoding',vocabulary:'Vocabulary',fluency:'Fluency',comprehension:'Comprehension'};
- return `<section class="panel journey-adult"><h2>Reading journey · grown-up view</h2><p>Starting point: band ${j.startBand} · ${escapeHtml(bands[j.startBand-1].title)}. Adventure: ${escapeHtml(j.theme)}. Calm presentation: ${j.calm?'on':'off'}.</p><p>Game observations only; not a reading-age assessment, professional review or diagnosis. Historical town answers do not count towards these skills.</p><table><thead><tr><th>Area</th><th>Independent</th><th>Supported</th></tr></thead><tbody>${Object.entries(s.areas).map(([area,count])=>`<tr><td>${areaLabels[area]}</td><td>${count.independent}</td><td>${count.supported}</td></tr>`).join('')}</tbody></table><p><strong>Optional review:</strong> ${nextPractices(profile).map(n=>escapeHtml(bands[n-1].title)).join(' · ')||'Explore any band'}.</p><p><strong>Content version:</strong> ${CONTENT_VERSION}. Records keep their original content version if questions change. Local phoneme recordings are not included in JSON backups.</p></section>`;
+ return `<section class="panel journey-adult"><h2>Reading journey · grown-up view</h2><p>Starting point: band ${j.startBand} · ${escapeHtml(bands[j.startBand-1].title)}. Adventure: ${escapeHtml(j.theme)}. Calm presentation: ${j.calm?'on':'off'}.</p><p>Game observations only; not a reading-age assessment, professional review or diagnosis. Historical town answers do not count towards these skills.</p><table><thead><tr><th>Area</th><th>Independent</th><th>Supported</th></tr></thead><tbody>${Object.entries(s.areas).map(([area,count])=>`<tr><td>${areaLabels[area]}</td><td>${count.independent}</td><td>${count.supported}</td></tr>`).join('')}</tbody></table><p><strong>Optional review:</strong> ${nextPractices(profile).map(n=>escapeHtml(bands[n-1].title)).join(' · ')||'Explore any band'}.</p><p><strong>Sounds and patterns to practise:</strong> ${[...new Set(j.records.filter(x=>!x.correct||x.supported).map(x=>x.skill))].slice(-8).map(escapeHtml).join(' · ')||'No particular pattern flagged yet'}.</p><p><strong>Content version:</strong> ${CONTENT_VERSION}. Records keep their original content version if questions change. Local phoneme recordings are not included in JSON backups.</p></section>`;
 }
