@@ -8,7 +8,7 @@ export function missionKey(band,id){return band+'-'+String(id).padStart(2,'0');}
 export function journeyRecords(profile){return journeyFor(profile).records;}
 export function recordResponse(profile,entry){
  const j=journeyFor(profile);
- if(!selectableMission(entry.band,entry.mission)||!['sound','tiles','evidence'].includes(entry.type)||typeof entry.skill!=='string'||entry.skill.length>80||typeof entry.correct!=='boolean'||typeof entry.supported!=='boolean'||typeof entry.audio!=='boolean'||typeof entry.model!=='boolean'||typeof entry.session!=='string'||entry.session.length>80||!Number.isFinite(entry.at))throw Error('Invalid practice result');
+ if(!selectableMission(entry.band,entry.mission)||!['sound','tiles','evidence'].includes(entry.type)||typeof entry.skill!=='string'||entry.skill.length>80||typeof entry.correct!=='boolean'||typeof entry.supported!=='boolean'||typeof entry.audio!=='boolean'||typeof entry.model!=='boolean'||typeof entry.session!=='string'||entry.session.length>80||!Number.isFinite(entry.at)||!['practice','apply'].includes(entry.phase))throw Error('Invalid practice result');
  j.records.push({version:CONTENT_VERSION,...entry});
  if(j.records.length>10000)j.records.splice(0,j.records.length-10000);
 }
@@ -72,10 +72,10 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
   on('[data-mission]',b=>start(number,Number(b.dataset.mission)));
  }
  function grown(){
-  shell('Grown-up choices',`<p class="journey-note">These are practice selections, not formal reading assessments.</p><label>Starting band <select id="adult-band">${bands.map(b=>`<option value="${b.id}" ${b.id===j().startBand?'selected':''}>${b.id}: ${escapeHtml(b.title)}</option>`).join('')}</select></label><label>Practice focus <select id="adult-focus">${['auto','sound','decoding','vocabulary','fluency','comprehension'].map(x=>`<option value="${x}" ${j().focus===x?'selected':''}>${x}</option>`).join('')}</select></label><button class="btn orange" id="adult-set">Save and open</button><p class="journey-note">Select any mission next. Sounds, words and reading comprehension are tracked separately.</p>`);
-  modal.querySelector('#adult-set').onclick=()=>{j().startBand=Number(modal.querySelector('#adult-band').value);j().focus=modal.querySelector('#adult-focus').value;save();openBand(j().startBand);};
+  shell('Grown-up choices',`<p class="journey-note">These are practice selections, not formal reading assessments.</p><label>Starting band <select id="adult-band">${bands.map(b=>`<option value="${b.id}" ${b.id===j().startBand?'selected':''}>${b.id}: ${escapeHtml(b.title)}</option>`).join('')}</select></label><label>Skill or word <select id="adult-specific"><option value="">All missions in selected band</option>${missions.map(m=>`<option value="${m.band}:${m.id}">Band ${m.band} — ${escapeHtml(m.target||m.question)}</option>`).join('')}</select></label><label>Practice focus <select id="adult-focus">${['auto','sound','decoding','vocabulary','fluency','comprehension'].map(x=>`<option value="${x}" ${j().focus===x?'selected':''}>${x}</option>`).join('')}</select></label><button class="btn orange" id="adult-set">Save and open</button><p class="journey-note">Select any mission next. Sounds, words and reading comprehension are tracked separately.</p>`);
+  modal.querySelector('#adult-set').onclick=()=>{j().startBand=Number(modal.querySelector('#adult-band').value);j().focus=modal.querySelector('#adult-focus').value;save();const item=modal.querySelector('#adult-specific').value;if(item){const [band,id]=item.split(':').map(Number);start(band,id);}else openBand(j().startBand);};
  }
- const probes=[['Which word says cat?','cat',['cat','mat','sun'],0],['Which word has sh?','ship',['ship','sip','sat'],0],['Find the key detail: The robot waited because the rain was heavy.','rain',['the rain was heavy','the robot was red','the gate was open'],0]];
+ const probes=[['Which word says cat?','cat',['mat','cat','sun'],1],['Which word has sh?','ship',['ship','sip','sat'],0],['Find the key detail: The robot waited because the rain was heavy.','rain',['the robot was red','the gate was open','the rain was heavy'],2]];
  function placementIntro(){
   placement=0;placementCorrect=[];
   shell('Help me choose',`<div class="journey-preview"><span class="journey-icon">🔎</span><p>Three little tries. No timer. Skip any time.</p></div><button class="btn orange" id="probe-start">▶ Try</button><button class="btn light" id="probe-skip">Skip — choose myself</button>`);
@@ -134,7 +134,7 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
   const m=current;const hasAnswer=m.type==='tiles'?tapped.length===m.tiles.length:selected!==null;
   if(!hasAnswer){feedback='☝ Try one first.';drawMission();return;}
   const correct=m.type==='tiles'?tapped.every((g,i)=>g===m.tiles[i]):m.type==='sound'?optionsFor(m)[selected]===m.target:selected===m.evidence;
-  recordResponse(p(),{band:m.band,mission:m.id,type:m.type,skill:m.skill,phase:stage,correct,supported:help||model||stage==='practice',audio:heard,model,session,at:Date.now()});
+  recordResponse(p(),{band:m.band,mission:m.id,type:m.type,skill:m.skill,phase:stage,correct,supported:help||model||stage==='practice'||(m.type==='sound'&&!soundPlayer.has(m.target)),audio:heard,model,session,at:Date.now()});
   save();
   if(!correct){help=true;feedback='↺ Have another go. Use Show me for a clue.';drawMission();return;}
   if(stage==='practice'){stage='apply';reset();feedback='';drawMission();return;}
