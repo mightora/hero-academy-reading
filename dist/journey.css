@@ -1,0 +1,52 @@
+/* Reading Journey extension — original Hero Academy palette, responsive tap-first controls. */
+.journey-shell{max-width:940px;margin:auto;padding:clamp(10px,2vw,22px);color:#14353b}
+.journey-note{font-size:clamp(14px,2vw,17px);line-height:1.5;color:#365f55}
+.journey-paths,.journey-actions,.journey-settings{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0}
+.journey-paths .btn,.journey-actions .btn{min-height:48px;white-space:normal}
+.journey-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px;margin:18px 0}
+.journey-card,.journey-band{border:2px solid #dbe1d6;background:#fffdf7;border-radius:18px;padding:16px;color:#14353b;min-height:132px;text-align:left;display:flex;flex-direction:column;justify-content:center;gap:8px;cursor:pointer;box-shadow:0 3px 0 #dbe1d6}
+.journey-card:focus-visible,.journey-band:focus-visible,.journey-tile:focus-visible,.journey-sentence:focus-visible{outline:3px solid #dc652e;outline-offset:3px}
+.journey-card strong{font-size:clamp(17px,2.5vw,22px)}
+.journey-card small{font-size:14px;line-height:1.4}
+.journey-icon{font-size:clamp(34px,6vw,52px);line-height:1.2}
+.journey-example{font-size:13px;color:#126b62}
+.journey-band-list{display:grid;gap:10px;margin:16px 0}
+.journey-band{min-height:76px;flex-direction:row;align-items:center;justify-content:flex-start;width:100%}
+.journey-band>span:nth-child(2){flex:1;display:grid;gap:4px}
+.journey-band small{font-size:14px}
+.journey-number{border-radius:50%;background:#d9eee1;display:grid;place-items:center;min-width:48px;height:48px;font-weight:800}
+.journey-settings select,.journey-shell select{min-height:48px;max-width:100%;border:2px solid #126b62;border-radius:10px;padding:8px;background:#fffdf7;color:#14353b}
+.journey-preview{text-align:center;padding:18px;background:#d9eee1;border-radius:18px}
+.journey-prompt{font-weight:800;font-size:clamp(20px,4vw,27px);line-height:1.5}
+.journey-adventure,.journey-celebrate{display:flex;justify-content:space-evenly;align-items:center;border-radius:18px;padding:12px;background:#dceadd;font-size:clamp(30px,7vw,60px);margin:8px 0 20px}
+.journey-adventure span,.journey-celebrate span{min-width:0}
+.journey-visual{background:#f8f5ec;border-radius:18px;padding:clamp(10px,2vw,18px);margin:16px 0;line-height:1.7}
+.journey-visual:empty{display:none}
+.journey-model,.journey-tiles,.journey-slots{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:15px 0}
+.journey-tile,.journey-slot{display:inline-grid;place-items:center;font-size:clamp(23px,6vw,36px);min-width:49px;min-height:57px;padding:9px;border:2px solid #126b62;border-radius:14px;background:#fffdf7;color:#14353b;font-weight:700}
+button.journey-tile{cursor:pointer}
+.journey-slot{background:#d9eee1;border-style:dashed}
+.journey-tile.picked,.journey-sentence.picked{background:#d9eee1;border-color:#126b62;box-shadow:inset 0 0 0 2px #126b62}
+.journey-sentences{display:grid;gap:10px}
+.journey-sentence{border:2px solid #dbe1d6;line-height:1.65;font-size:clamp(17px,3vw,23px);border-radius:14px;padding:16px;text-align:left;background:#fffdf7;color:#14353b;cursor:pointer;white-space:normal;overflow-wrap:anywhere}
+.journey-passage{font-size:clamp(18px,3vw,24px);line-height:1.8;margin:12px 0}
+.journey-evidence{background:#f6d46c;box-decoration-break:clone}
+.journey-feedback{min-height:2em;color:#126b62;font-weight:700}
+.journey-adult{overflow-x:auto}
+.journey-adult table{width:100%;border-collapse:collapse}
+.journey-adult td,.journey-adult th{padding:9px;border-bottom:1px solid #dbe1d6;text-align:left}
+.journey-calm .journey-adventure{background:#f8f5ec}
+.journey-calm .journey-icon{filter:grayscale(.35)}
+@media(max-width:500px){
+ .journey-shell{padding:6px}
+ .journey-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .journey-card{padding:11px;min-height:120px}
+ .journey-card strong{font-size:16px}
+ .journey-card small{font-size:12px}
+ .journey-actions .btn,.journey-paths .btn{flex:1 1 135px}
+ .journey-settings{align-items:flex-start;flex-direction:column}
+ .journey-tile{min-width:44px;min-height:50px;padding:6px}
+ .journey-band{padding:8px}
+}
+@media(max-width:360px){.journey-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.journey-shell *{animation:none!important;transition:none!important}}
