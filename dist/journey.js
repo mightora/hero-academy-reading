@@ -109,6 +109,7 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
  function optionsFor(m){if(m.type==='sound')return [...new Set([m.target,...['s','a','m','p','t','i','n','d','g','o','c','k'].filter(x=>x!==m.target).slice(0,3)])].slice(0,4);
  if(m.type==='tiles'){const pool=[...m.tiles];for(const g of ['s','a','t','p','i','n','sh','ch','ee','ai'])if(pool.length<m.tiles.length+2&&!m.tiles.includes(g))pool.push(g);return pool;}return [];}
  function exercise(m){
+  if(stage==='transfer'&&m.application){const words=m.application.text.match(/[A-Za-z]+|[^A-Za-z]+/g)||[];let n=0;return `<p class="journey-prompt">📖 Find the word in this message</p><div class="journey-short-text">${words.map(w=>/^[A-Za-z]+$/.test(w)?`<button class="journey-short-word ${selected===n?'picked':''}" data-transfer="${n++}" aria-pressed="${selected===n-1}">${escapeHtml(w)}</button>`:escapeHtml(w)).join('')}</div><button class="btn light" id="j-short-hear">🔊 Hear the message (help)</button><p class="journey-note">Look for <strong>${escapeHtml(m.target)}</strong>. An adult can read the rest.</p>`;}
   if(isLab(m))return labExercise(m,tapped);
   if(m.type==='evidence')return `<p class="journey-prompt">${escapeHtml(m.question)}</p><div class="journey-sentences">${sentenceList(m.text).map((s,i)=>`<button class="journey-sentence ${selected===i?'picked':''}" data-pick="${i}" aria-pressed="${selected===i}">${escapeHtml(s)}</button>`).join('')}</div>`;
   if(m.type==='sound')return `<p class="journey-prompt">👂 🔤 Find the sound</p><button class="btn light" id="j-sound">🔊 Sound / 🧑 Adult</button><small>${soundPlayer.has(m.target)?'Tap to hear the recorded sound.':'🧑 No phoneme recording on this device: a grown-up models it.'}</small><div class="journey-tiles">${optionsFor(m).map((t,i)=>`<button class="journey-tile ${selected===i?'picked':''}" data-pick="${i}">${escapeHtml(t)}</button>`).join('')}</div>`;
@@ -116,7 +117,7 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
  }
  function drawMission(){
   const m=current,b=bands[m.band-1],theme=themes.find(x=>x[0]===j().theme);
-  shell(m.scene,`<div class="journey-mission"><div class="journey-adventure" aria-hidden="true"><span>${theme?.[1]||'🤖'}</span><span>→</span><span>⚡</span><span>→</span><span>⭐</span></div><p class="journey-note">${escapeHtml(b.title)} · ${m.id} / 12 · ${stage==='show'?'Show me':stage==='practice'?'Practise together':'Do the mission'}</p>${stage==='show'? `<div class="journey-visual">${escapeHtml(m.example)}<div>${isLab(m)?labIntro(m):modelBody(m)}</div></div><button class="btn light" id="j-model-audio">🔊 Hear example</button><div class="journey-actions"><button class="btn orange" id="j-practice">▶ Practise</button><button class="btn light" id="j-independent">Skip help → Try</button></div>`:`<div class="journey-visual">${stage==='practice'||help?modelBody(m):''}</div>${exercise(m)}<p class="journey-feedback" role="status">${escapeHtml(feedback)}</p><div class="journey-actions"><button class="btn light" id="j-help">☝ Show me</button><button class="btn orange" id="j-check">✓ Check</button></div>`}</div>`);
+  shell(m.scene,`<div class="journey-mission"><div class="journey-adventure" aria-hidden="true"><span>${theme?.[1]||'🤖'}</span><span>→</span><span>⚡</span><span>→</span><span>⭐</span></div><p class="journey-note">${escapeHtml(b.title)} · ${m.id} / 12 · ${stage==='show'?'Show me':stage==='practice'?'Practise together':stage==='transfer'?'Use it in a message':'Do the mission'}</p>${stage==='show'? `<div class="journey-visual">${escapeHtml(m.example)}<div>${isLab(m)?labIntro(m):modelBody(m)}</div></div><button class="btn light" id="j-model-audio">🔊 Hear example</button><div class="journey-actions"><button class="btn orange" id="j-practice">▶ Practise</button><button class="btn light" id="j-independent">Skip help → Try</button></div>`:`<div class="journey-visual">${stage==='practice'||help?modelBody(m):''}</div>${exercise(m)}<p class="journey-feedback" role="status">${escapeHtml(feedback)}</p><div class="journey-actions"><button class="btn light" id="j-help">☝ Show me</button><button class="btn orange" id="j-check">✓ Check</button></div>`}</div>`);
   if(stage==='show'){
    modal.querySelector('#j-model-audio').onclick=()=>m.type==='sound'?playSound(m.target):voice(m.type==='tiles'?m.target:isLab(m)?labSpokenText(m):m.text);
    modal.querySelector('#j-practice').onclick=()=>{stage='practice';reset();model=true;drawMission();};
@@ -125,6 +126,8 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
   const soundBtn=modal.querySelector('#j-sound');if(soundBtn)soundBtn.onclick=()=>playSound(m.target);
   const wordBtn=modal.querySelector('#j-word');if(wordBtn)wordBtn.onclick=()=>{heard=true;voice(m.target);};
   on('[data-pick]',b=>{selected=Number(b.dataset.pick);feedback='';drawMission();});
+  on('[data-transfer]',b=>{selected=Number(b.dataset.transfer);feedback='';drawMission();});
+  const shortHear=modal.querySelector('#j-short-hear');if(shortHear)shortHear.onclick=()=>{help=true;voice(m.application.text);};
   on('[data-tap]',b=>{if(tapped.length<m.tiles.length){tapped.push(optionsFor(m)[Number(b.dataset.tap)]);feedback='';drawMission();}});
   on('[data-board]',b=>{tapped=addLabCard(m,tapped,Number(b.dataset.board));feedback='';drawMission();});
   on('[data-undo]',b=>{tapped.splice(Number(b.dataset.undo),1);feedback='';drawMission();});
@@ -139,13 +142,14 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
   soundPlayer.play([grapheme],{onError:()=>{help=true;feedback='🧑 Please ask a grown-up to model this sound.';drawMission();}});
  }
  function check(){
-  const m=current;const hasAnswer=m.type==='tiles'?tapped.length===m.tiles.length:isLab(m)?hasLabAnswer(m,tapped):selected!==null;
+  const m=current;const transfer=stage==='transfer'&&!!m.application;const hasAnswer=transfer?selected!==null:m.type==='tiles'?tapped.length===m.tiles.length:isLab(m)?hasLabAnswer(m,tapped):selected!==null;
   if(!hasAnswer){feedback='☝ Try one first.';drawMission();return;}
-  const correct=m.type==='tiles'?tapped.every((g,i)=>g===m.tiles[i]):isLab(m)?answerLab(m,tapped):m.type==='sound'?optionsFor(m)[selected]===m.target:selected===m.evidence;
+  const correct=transfer?(m.application.text.match(/[A-Za-z]+/g)||[])[selected]?.toLowerCase()===m.target:m.type==='tiles'?tapped.every((g,i)=>g===m.tiles[i]):isLab(m)?answerLab(m,tapped):m.type==='sound'?optionsFor(m)[selected]===m.target:selected===m.evidence;
   recordResponse(p(),{band:m.band,mission:m.id,type:m.type,skill:m.skill,phase:stage,correct,supported:help||model||stage==='practice'||(m.type==='sound'&&!soundPlayer.has(m.target)),audio:heard,model,session,at:Date.now()});
   save();
   if(!correct){help=true;feedback='↺ Have another go. Use Show me for a clue.';drawMission();return;}
   if(stage==='practice'){stage='apply';reset();feedback='';drawMission();return;}
+  if(stage==='apply'&&m.application){stage='transfer';reset();drawMission();return;}
   const first=finishJourneyMission(p(),m.band,m.id);save();
   shell('⭐ Mission complete',`<div class="journey-celebrate"><span>${themes.find(x=>x[0]===j().theme)?.[1]||'🤖'}</span><span>⚡</span><span>⭐</span></div><p>${escapeHtml(m.outcome||'Equipment restored!')} ${first?'A new star for this mission.':'A good replay — your star was already saved.'}</p><p class="journey-note">Finishing an adventure is separate from demonstrating a reading skill.</p><button class="btn orange" id="j-next">▶ Next mission</button><button class="btn light" id="j-band">↩ Band map</button>`);
   modal.querySelector('#j-next').onclick=()=>m.id<12?start(m.band,m.id+1):openBand(m.band);modal.querySelector('#j-band').onclick=()=>openBand(m.band);
