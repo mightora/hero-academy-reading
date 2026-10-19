@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": "2026.10.19-draft1",
+  "contentVersion": "2026.10.19-draft2",
   "status": "human-review-required",
   "recordingPolicy": "Bundled pure-phoneme clips: none. Locally supplied adult recordings are held in IndexedDB, per device; their presence is shown in Grown-ups.",
   "deviceNarration": "Optional Web Speech API whole words and passages only. No external voice-service integration detected in this repository; no client-side credentials.",
