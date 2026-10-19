@@ -1,10 +1,10 @@
 # Hero Academy Reading Journey — curriculum and evidence map
 
-Version: `2026.10.19-draft1`. Last checked: 19 October 2026. **Draft for teaching and accessibility review**.
+Version: `2026.10.19-draft2`. Last checked: 19 October 2026. **Draft for teaching and accessibility review**.
 
 ## Scope and boundaries
 
-The original 12-town-mission adventure remains available from **Town quests**. The separate Reading Journey offers 12 open bands and 12 distinct catalogue entries per band. These are a **starter library of 144 short activities**, not 144 independently validated lessons. Early bands use sound and word-tile activities; later bands use annotated evidence-hunting passages. The game does not yet replace school phonics instruction, full-length independent reading or specialist assessment.
+The original 12-town-mission adventure remains available from **Town quests**. The separate Reading Journey offers 12 open bands and 12 distinct catalogue entries per band. These are a **starter library of 144 short activities**, not 144 independently validated lessons. Early bands use sound and word-tile activities; bands 2–5 now also require finding the practised word in one of 48 short controlled texts. Later bands include 36 authored sentence-repair, sequence, precise-quote, paired-source and three-part claim investigations alongside their original evidence-finding passages. The game does not yet replace school phonics instruction, full-length independent reading or specialist assessment.
 
 This is **curriculum-informed design**, not evidence that Hero Academy itself improves reading. No clinical study or validated reading-age instrument has been conducted. No child age or date of birth is collected.
 
@@ -55,4 +55,12 @@ The city map, movement, treasures, hero customisation, optional sound controls, 
 
 ## Outstanding specialist review
 
-Qualified phonics educators should review actual phoneme representations, scope and sequence, alternative spellings and exception-word treatment. Reading teachers should review passage complexity, genuine comprehension opportunities, answer ambiguity and inclusion of poetry, primary sources and long-form texts. Accessibility specialists should assess screen-reader and keyboard paths on real mobile hardware. Current reading tasks rely heavily on evidence selection at higher levels; open responses, richer sequencing, alternative interpretations, and more diverse authentic texts remain future development. No real iPhone testing is claimed here.
+Qualified phonics educators should review actual phoneme representations, scope and sequence, alternative spellings and exception-word treatment. Reading teachers should review passage complexity, genuine comprehension opportunities, answer ambiguity and inclusion of poetry, primary sources and long-form texts. Accessibility specialists should assess screen-reader and keyboard paths on real mobile hardware. The new reading labs add sequencing, quote-selection and paired-source reasoning. However, the existing pieces are short; open responses, credible competing interpretations, longer texts, diverse authentic genres and school-level expert review remain future work. See [CONTENT_REVIEW.md](CONTENT_REVIEW.md) for the outstanding sign-off gates. No real iPhone testing is claimed here.
+
+## Iteration 2: authored adventure expansion (19 October 2026)
+
+- **36** new multi-step cases in `dist/quest-labs.js`: 12 ordering/repair puzzles, 12 precise quote hunts, six dual-source comparison boards and six evidence judgement boards. Every answer and distractor is curated in the repository, not generated at runtime.
+- **48** word-in-context texts in `dist/phonics-application.js`, one for each band-2-to-5 mission. The child taps a target word in a short text after practising word building; this transfer response is saved with phase `transfer` and does not alter earlier levels.
+- `inspectText()` checks against declared grapheme inventories and explicitly recorded exception words. That mechanical check does not establish phonetic decodability, linguistic appropriateness or SSP programme fidelity. It does not validate child-facing navigation instructions.
+- A supported practice example remains marked supported in the ensuing applied response. Earlier draft results remain stored under their original content version.
+- The original town missions and all existing save controls are retained. No real iPhone or external specialist sign-off is claimed.
