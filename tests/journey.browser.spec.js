@@ -6,7 +6,8 @@ test('all twelve bands can be opened and a representative mission can be complet
  if(await page.locator('#modal [data-close]').count())await page.locator('#modal [data-close]').first().click();
  await expect(page.locator('nav [data-action="levels"]')).toBeVisible();
  for(const band of bands){
-  await page.locator('nav [data-action="levels"]').click();
+  if(band.id===1)await page.locator('nav [data-action="levels"]').click();
+  else await page.locator('#modal [data-jhome]').click();
   await page.locator('#j-all').click();
   await page.locator('#modal [data-band="'+band.id+'"]').click();
   await page.locator('#modal [data-mission="1"]').click();
