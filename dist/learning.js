@@ -1,6 +1,6 @@
 export const wordBanks={a:['cat','map','cap','bag'],i:['pin','tin','bin','lid'],o:['dog','log','pot','top'],e:['pen','hen','bed','net'],u:['sun','cup','bus','bug'],cvcc:['lamp','tent','nest','hand'],ccvc:['flag','frog','crab','drum'],digraph:['ship','fish','shop','chin'],longer:['shell','chick','chest','brush']};
 export const groupNames={a:'Short a',i:'Short i',o:'Short o',e:'Short e',u:'Short u',cvcc:'Four letters: final blends',ccvc:'Four letters: initial blends',digraph:'Two letters, one sound',longer:'Five letters: sound teams'};
-export function segmentWord(word){return word.match(/sh|ch|th|ng|ck|ll|ss|ff|./g)||[];}
+export function segmentWord(word){return word.match(/igh|ear|air|ure|sh|ch|th|ng|ck|ll|ss|ff|ai|ee|oa|oo|ar|or|ur|ow|oi|./g)||[];}
 const modes=['listen','build','picture'];
 export function makeTask(group,type,word,offset=0){const bank=wordBanks[group],alternatives=bank.filter(w=>w!==word);const options=[word,...alternatives];return {type,word,group,skill:type+':'+group,taskId:group+':'+type+':'+word,graphemes:segmentWord(word),options,correct:0,hidden:true};}
 export function rescueTasks(group,offset=0){const bank=wordBanks[group];return modes.map((type,i)=>makeTask(group,type,bank[(i+offset)%bank.length],offset));}
