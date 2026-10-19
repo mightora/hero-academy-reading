@@ -69,3 +69,8 @@ button.journey-tile{cursor:pointer}
 .journey-board-model .model-piece{cursor:default;background:#d9eee1}
 .journey-model mark{background:#f6d46c;color:#14353b;box-decoration-break:clone}
 @media(max-width:520px){.journey-board{grid-template-columns:1fr}.journey-board-slot{min-height:76px}.journey-quote{padding:8px}.journey-source{padding:11px}}
+
+.journey-short-text{line-height:2.4;font-size:clamp(24px,5vw,33px);background:#fffdf7;border:2px solid #dbe1d6;border-radius:18px;padding:clamp(10px,3vw,22px);margin:16px 0;overflow-wrap:anywhere}
+.journey-short-word{border:2px solid transparent;border-radius:9px;padding:4px 7px;margin:0 2px;background:transparent;color:#14353b;font:inherit;cursor:pointer;line-height:1.7}
+.journey-short-word.picked{border-color:#126b62;background:#f6d46c}
+.journey-short-word:focus-visible{outline:3px solid #dc652e;outline-offset:3px}
