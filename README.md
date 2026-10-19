@@ -121,3 +121,8 @@ Technical additions: dist/sounds.js provides validated clip storage and cancella
 ## Expanded Reading Journey (draft)
 
 The new **Choose level** experience has six entry cards, a skippable three-question starting suggestion, an adult-selected route and twelve open bands with twelve authored practice prompts each. The original city and level codes remain available via **Town quests**. See [Reading Journey curriculum and sources](READING_JOURNEY.md), [authoring guide](AUTHORING_JOURNEY.md), [save migrations](MIGRATIONS_JOURNEY.md) and [phoneme audio status](dist/audio-manifest.json). Specialist review and recordings are still outstanding; this is not a validated reading assessment or complete systematic phonics course.
+
+
+### More varied missions (draft expansion)
+
+Thirty-six advanced investigations now include interactive sentence repair, story sequencing, exact quotation selection, two-source comparisons and three-part claim evaluations. Forty-eight early reading missions now end with a word-in-short-text application using a declared spelling inventory. Both are fully static and versioned. These entries **still require independent teaching-specialist review**; see [Content review checklist](CONTENT_REVIEW.md) and do not infer validated learning outcomes from completion stars.
