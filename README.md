@@ -116,3 +116,8 @@ In **Grown-ups → Individual sounds**, choose a sound, record up to five second
 Saved clips stay in IndexedDB on this device and are not sent to a server or included in progress JSON backups. Browser site-data deletion removes them. Sounds plays an available clip on tap. Blend plays the sound recordings in order, highlighting their tiles, then speaks the whole word. Missing recordings show adult help, with no fabricated audio. Locally supplied recordings need adult review and are not certified instructional audio. Regional accent differences are expected.
 
 Technical additions: dist/sounds.js provides validated clip storage and cancellable sequential playback; learning.js segments sh/ch/ck/ll as graphemes and supports the longer-word groups. The service-worker cache version is updated for the additional module.
+
+
+## Expanded Reading Journey (draft)
+
+The new **Choose level** experience has six entry cards, a skippable three-question starting suggestion, an adult-selected route and twelve open bands with twelve authored practice prompts each. The original city and level codes remain available via **Town quests**. See [Reading Journey curriculum and sources](READING_JOURNEY.md), [authoring guide](AUTHORING_JOURNEY.md), [save migrations](MIGRATIONS_JOURNEY.md) and [phoneme audio status](dist/audio-manifest.json). Specialist review and recordings are still outstanding; this is not a validated reading assessment or complete systematic phonics course.
