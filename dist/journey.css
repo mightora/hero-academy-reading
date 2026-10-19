@@ -50,3 +50,22 @@ button.journey-tile{cursor:pointer}
 }
 @media(max-width:360px){.journey-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.journey-shell *{animation:none!important;transition:none!important}}
+
+/* Multi-step, text-first investigation activities */
+.journey-source-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;margin:14px 0}
+.journey-source{display:block;padding:16px;background:#f8f5ec;color:#14353b;border:2px solid #dbe1d6;border-radius:14px;line-height:1.6;font-size:clamp(16px,2vw,21px);overflow-wrap:anywhere;margin:8px 0}
+.journey-source p{margin:7px 0 0;line-height:1.65}
+.journey-board{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,205px),1fr));gap:10px;margin:18px 0}
+.journey-board-slot{border:2px dashed #126b62;border-radius:16px;min-height:100px;padding:12px;background:#d9eee1;color:#14353b;text-align:left;display:grid;align-content:space-between;gap:8px;cursor:pointer;overflow-wrap:anywhere}
+.journey-board-slot strong{font-size:14px;color:#365f55}
+.journey-board-slot span{font-size:clamp(17px,2.4vw,22px);font-weight:700}
+.journey-card-bank,.journey-board-model{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}
+.journey-piece{min-height:60px;flex:1 1 160px;max-width:100%;text-align:left;border-radius:14px;border:2px solid #dbE1D6;background:#fffdf7;color:#14353b;cursor:pointer;padding:13px;font-size:clamp(16px,2vw,19px);line-height:1.45;overflow-wrap:anywhere}
+.journey-piece.picked,.journey-piece:disabled{opacity:.65;border-color:#126b62}
+.journey-piece:focus-visible,.journey-board-slot:focus-visible,.journey-word:focus-visible{outline:3px solid #dc652e;outline-offset:3px}
+.journey-quote{padding:15px;border-radius:16px;border:1px solid #dbe1d6;background:#fffdf7;line-height:2.2;white-space:normal;overflow-wrap:anywhere}
+.journey-word{display:inline;margin:2px 1px;border:2px solid transparent;background:transparent;color:#14353b;padding:4px 3px;border-radius:6px;cursor:pointer;font-size:clamp(18px,3vw,24px);line-height:1.85}
+.journey-word.picked{background:#f6d46c;border-color:#126b62}
+.journey-board-model .model-piece{cursor:default;background:#d9eee1}
+.journey-model mark{background:#f6d46c;color:#14353b;box-decoration-break:clone}
+@media(max-width:520px){.journey-board{grid-template-columns:1fr}.journey-board-slot{min-height:76px}.journey-quote{padding:8px}.journey-source{padding:11px}}
