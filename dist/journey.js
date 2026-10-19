@@ -1,6 +1,7 @@
 import {bands,missions,entryGroups,themes,CONTENT_VERSION,selectableMission} from './journey-content.js';
 import {segmentWord} from './learning.js';
 import {soundId} from './sounds.js';
+import {isLab,labIntro,labModel,labExercise,answerLab,hasLabAnswer,labSpokenText,addLabCard,selectQuoteWord} from './lab-ui.js';
 
 export const journeyDefault=()=>({startBand:2,entry:'Build words',theme:'robot',calm:false,records:[],completed:[],focus:'auto'});
 export function journeyFor(profile){if(!profile.journey)profile.journey=journeyDefault();return profile.journey;}
@@ -8,7 +9,7 @@ export function missionKey(band,id){return band+'-'+String(id).padStart(2,'0');}
 export function journeyRecords(profile){return journeyFor(profile).records;}
 export function recordResponse(profile,entry){
  const j=journeyFor(profile);
- if(!selectableMission(entry.band,entry.mission)||!['sound','tiles','evidence'].includes(entry.type)||typeof entry.skill!=='string'||entry.skill.length>80||typeof entry.correct!=='boolean'||typeof entry.supported!=='boolean'||typeof entry.audio!=='boolean'||typeof entry.model!=='boolean'||typeof entry.session!=='string'||entry.session.length>80||!Number.isFinite(entry.at)||!['practice','apply'].includes(entry.phase))throw Error('Invalid practice result');
+ if(!selectableMission(entry.band,entry.mission)||!['sound','tiles','evidence','sequence','quote','compare','claim'].includes(entry.type)||typeof entry.skill!=='string'||entry.skill.length>80||typeof entry.correct!=='boolean'||typeof entry.supported!=='boolean'||typeof entry.audio!=='boolean'||typeof entry.model!=='boolean'||typeof entry.session!=='string'||entry.session.length>80||!Number.isFinite(entry.at)||!['practice','apply'].includes(entry.phase))throw Error('Invalid practice result');
  j.records.push({version:CONTENT_VERSION,...entry});
  if(j.records.length>10000)j.records.splice(0,j.records.length-10000);
 }
@@ -69,7 +70,7 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
  function openBand(number){
   narrator.stop();soundPlayer.stop();const b=bands[number-1];if(!b)return;
   j().startBand=number;save();
-  shell(b.title,`<p class="journey-note">${escapeHtml(b.objective)}</p><button class="btn orange" id="j-start-here">★ Make this my starting point</button><div class="journey-grid">${missions.filter(m=>m.band===number).map(m=>`<button class="journey-card" data-mission="${m.id}"><span class="journey-icon">${themes.find(t=>t[0]===j().theme)?.[1]||'🤖'}</span><strong>${m.id}. ${escapeHtml(m.scene)}</strong><small>${escapeHtml(m.type==='evidence'?m.question:m.target)}</small><span>${j().completed.includes(missionKey(number,m.id))?'✓ Replay':'▶ Go'}</span></button>`).join('')}</div><p class="journey-note">Missions and stars never complete earlier bands automatically.</p>`);
+  shell(b.title,`<p class="journey-note">${escapeHtml(b.objective)}</p><button class="btn orange" id="j-start-here">★ Make this my starting point</button><div class="journey-grid">${missions.filter(m=>m.band===number).map(m=>`<button class="journey-card" data-mission="${m.id}"><span class="journey-icon">${themes.find(t=>t[0]===j().theme)?.[1]||'🤖'}</span><strong>${m.id}. ${escapeHtml(m.scene)}</strong><small>${escapeHtml(m.question||m.target||m.scene)}</small><span>${j().completed.includes(missionKey(number,m.id))?'✓ Replay':'▶ Go'}</span></button>`).join('')}</div><p class="journey-note">Missions and stars never complete earlier bands automatically.</p>`);
   modal.querySelector('#j-start-here').onclick=()=>{j().startBand=number;save();openBand(number);};
   on('[data-mission]',b=>start(number,Number(b.dataset.mission)));
  }
@@ -100,6 +101,7 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
  function reset(){tapped=[];selected=null;help=false;heard=false;model=false;feedback='';}
  const tiles=m=>m.type==='tiles'?m.tiles: m.type==='sound'?[m.target]:[];
  function modelBody(m){
+  if(isLab(m))return labModel(m);
   if(m.type==='tiles')return `<p class="journey-model">${m.tiles.map(x=>`<span class="journey-tile">${escapeHtml(x)}</span>`).join('')}</p><small>One sound spelling per tile. Say each sound, then blend.</small>`;
   if(m.type==='sound')return `<p class="journey-model"><span class="journey-tile">${escapeHtml(m.target)}</span></p><small>Grown-up: model the pure phoneme. Do not use the letter name.</small>`;
   return `<blockquote class="journey-passage">${sentenceList(m.text).map((s,i)=>`<span class="${i===m.evidence?'journey-evidence':''}">${escapeHtml(s)} </span>`).join('')}</blockquote><small>The highlighted sentence is one possible evidence location.</small>`;
@@ -107,15 +109,16 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
  function optionsFor(m){if(m.type==='sound')return [...new Set([m.target,...['s','a','m','p','t','i','n','d','g','o','c','k'].filter(x=>x!==m.target).slice(0,3)])].slice(0,4);
  if(m.type==='tiles'){const pool=[...m.tiles];for(const g of ['s','a','t','p','i','n','sh','ch','ee','ai'])if(pool.length<m.tiles.length+2&&!m.tiles.includes(g))pool.push(g);return pool;}return [];}
  function exercise(m){
+  if(isLab(m))return labExercise(m,tapped);
   if(m.type==='evidence')return `<p class="journey-prompt">${escapeHtml(m.question)}</p><div class="journey-sentences">${sentenceList(m.text).map((s,i)=>`<button class="journey-sentence ${selected===i?'picked':''}" data-pick="${i}" aria-pressed="${selected===i}">${escapeHtml(s)}</button>`).join('')}</div>`;
   if(m.type==='sound')return `<p class="journey-prompt">👂 🔤 Find the sound</p><button class="btn light" id="j-sound">🔊 Sound / 🧑 Adult</button><small>${soundPlayer.has(m.target)?'Tap to hear the recorded sound.':'🧑 No phoneme recording on this device: a grown-up models it.'}</small><div class="journey-tiles">${optionsFor(m).map((t,i)=>`<button class="journey-tile ${selected===i?'picked':''}" data-pick="${i}">${escapeHtml(t)}</button>`).join('')}</div>`;
   return `<p class="journey-prompt">🔊 → ▦ Build the word</p><button class="btn light" id="j-word">🔊 Hear word</button><div class="journey-slots">${m.tiles.map((g,i)=>`<span class="journey-slot">${escapeHtml(tapped[i]||'·')}</span>`).join('')}</div><div class="journey-tiles">${optionsFor(m).map((t,i)=>`<button class="journey-tile" data-tap="${i}">${escapeHtml(t)}</button>`).join('')}</div><button class="btn light" id="j-reset">↺ Reset</button>`;
  }
  function drawMission(){
   const m=current,b=bands[m.band-1],theme=themes.find(x=>x[0]===j().theme);
-  shell(m.scene,`<div class="journey-mission"><div class="journey-adventure" aria-hidden="true"><span>${theme?.[1]||'🤖'}</span><span>→</span><span>⚡</span><span>→</span><span>⭐</span></div><p class="journey-note">${escapeHtml(b.title)} · ${m.id} / 12 · ${stage==='show'?'Show me':stage==='practice'?'Practise together':'Do the mission'}</p>${stage==='show'? `<div class="journey-visual">${escapeHtml(m.example)}<div>${modelBody(m)}</div></div><button class="btn light" id="j-model-audio">🔊 Hear example</button><div class="journey-actions"><button class="btn orange" id="j-practice">▶ Practise</button><button class="btn light" id="j-independent">Skip help → Try</button></div>`:`<div class="journey-visual">${stage==='practice'||help?modelBody(m):''}</div>${exercise(m)}<p class="journey-feedback" role="status">${escapeHtml(feedback)}</p><div class="journey-actions"><button class="btn light" id="j-help">☝ Show me</button><button class="btn orange" id="j-check">✓ Check</button></div>`}</div>`);
+  shell(m.scene,`<div class="journey-mission"><div class="journey-adventure" aria-hidden="true"><span>${theme?.[1]||'🤖'}</span><span>→</span><span>⚡</span><span>→</span><span>⭐</span></div><p class="journey-note">${escapeHtml(b.title)} · ${m.id} / 12 · ${stage==='show'?'Show me':stage==='practice'?'Practise together':'Do the mission'}</p>${stage==='show'? `<div class="journey-visual">${escapeHtml(m.example)}<div>${isLab(m)?labIntro(m):modelBody(m)}</div></div><button class="btn light" id="j-model-audio">🔊 Hear example</button><div class="journey-actions"><button class="btn orange" id="j-practice">▶ Practise</button><button class="btn light" id="j-independent">Skip help → Try</button></div>`:`<div class="journey-visual">${stage==='practice'||help?modelBody(m):''}</div>${exercise(m)}<p class="journey-feedback" role="status">${escapeHtml(feedback)}</p><div class="journey-actions"><button class="btn light" id="j-help">☝ Show me</button><button class="btn orange" id="j-check">✓ Check</button></div>`}</div>`);
   if(stage==='show'){
-   modal.querySelector('#j-model-audio').onclick=()=>m.type==='sound'?playSound(m.target):voice(m.type==='tiles'?m.target:m.text);
+   modal.querySelector('#j-model-audio').onclick=()=>m.type==='sound'?playSound(m.target):voice(m.type==='tiles'?m.target:isLab(m)?labSpokenText(m):m.text);
    modal.querySelector('#j-practice').onclick=()=>{stage='practice';reset();model=true;drawMission();};
    modal.querySelector('#j-independent').onclick=()=>{stage='apply';reset();drawMission();};return;
   }
@@ -141,7 +144,7 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
   if(!correct){help=true;feedback='↺ Have another go. Use Show me for a clue.';drawMission();return;}
   if(stage==='practice'){stage='apply';reset();feedback='';drawMission();return;}
   const first=finishJourneyMission(p(),m.band,m.id);save();
-  shell('⭐ Mission complete',`<div class="journey-celebrate"><span>${themes.find(x=>x[0]===j().theme)?.[1]||'🤖'}</span><span>⚡</span><span>⭐</span></div><p>Equipment restored! ${first?'A new star for this mission.':'A good replay — your star was already saved.'}</p><p class="journey-note">Finishing an adventure is separate from demonstrating a reading skill.</p><button class="btn orange" id="j-next">▶ Next mission</button><button class="btn light" id="j-band">↩ Band map</button>`);
+  shell('⭐ Mission complete',`<div class="journey-celebrate"><span>${themes.find(x=>x[0]===j().theme)?.[1]||'🤖'}</span><span>⚡</span><span>⭐</span></div><p>${escapeHtml(m.outcome||'Equipment restored!')} ${first?'A new star for this mission.':'A good replay — your star was already saved.'}</p><p class="journey-note">Finishing an adventure is separate from demonstrating a reading skill.</p><button class="btn orange" id="j-next">▶ Next mission</button><button class="btn light" id="j-band">↩ Band map</button>`);
   modal.querySelector('#j-next').onclick=()=>m.id<12?start(m.band,m.id+1):openBand(m.band);modal.querySelector('#j-band').onclick=()=>openBand(m.band);
  }
  return {open:landing,openBand,openMission:start};
