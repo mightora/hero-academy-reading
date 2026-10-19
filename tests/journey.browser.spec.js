@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {missions,bands} from '../dist/journey-content.js';
-test.setTimeout(180000);
+test.setTimeout(70000);
 test('all twelve bands can be opened and a representative mission can be completed',async({page})=>{
  await page.goto('/');
  if(await page.locator('#modal [data-close]').count())await page.locator('#modal [data-close]').first().click();
