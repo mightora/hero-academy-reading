@@ -42,7 +42,7 @@ const escapeHtml=value=>String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'
 const sentenceList=text=>text.match(/[^.!?]+[.!?]+|[^.!?]+$/g)?.map(x=>x.trim()).filter(Boolean)||[];
 const sessionId=()=>Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
 export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,save,say,narrator,soundPlayer}){
- let current=null,session=sessionId(),placement=0,placementCorrect=[],stage='show',tapped=[],selected=null,help=false,heard=false,model=false,feedback='',entry=null;
+ let current=null,session=sessionId(),placement=0,placementCorrect=[],stage='show',tapped=[],selected=null,help=false,heard=false,model=false,practiceSupport=false,feedback='',entry=null;
  const p=()=>profile(),j=()=>journeyFor(p());
  const actionBar=()=>'<div class="journey-actions"><button class="btn light" data-jhome>⌂ Choose level</button><button class="btn light" data-jclose>✕ Close</button></div>';
  function shell(title,body){showDialog(`${dialogHead('READING JOURNEY',escapeHtml(title))}<div class="journey-shell ${j().calm?'journey-calm':''}">${body}${actionBar()}</div>`);modal.querySelector('[data-jhome]').onclick=landing;modal.querySelector('[data-jclose]').onclick=closeDialog;}
@@ -96,7 +96,7 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
  }
  function start(band,id){
   narrator.stop();soundPlayer.stop();if(!selectableMission(band,id))return;
-  current=missions.find(m=>m.band===band&&m.id===id);session=sessionId();stage='show';reset();drawMission();
+  current=missions.find(m=>m.band===band&&m.id===id);session=sessionId();stage='show';practiceSupport=false;reset();drawMission();
  }
  function reset(){tapped=[];selected=null;help=false;heard=false;model=false;feedback='';}
  const tiles=m=>m.type==='tiles'?m.tiles: m.type==='sound'?[m.target]:[];
@@ -145,10 +145,10 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
   const m=current;const transfer=stage==='transfer'&&!!m.application;const hasAnswer=transfer?selected!==null:m.type==='tiles'?tapped.length===m.tiles.length:isLab(m)?hasLabAnswer(m,tapped):selected!==null;
   if(!hasAnswer){feedback='☝ Try one first.';drawMission();return;}
   const correct=transfer?(m.application.text.match(/[A-Za-z]+/g)||[])[selected]?.toLowerCase()===m.target:m.type==='tiles'?tapped.every((g,i)=>g===m.tiles[i]):isLab(m)?answerLab(m,tapped):m.type==='sound'?optionsFor(m)[selected]===m.target:selected===m.evidence;
-  recordResponse(p(),{band:m.band,mission:m.id,type:m.type,skill:m.skill,phase:stage,correct,supported:help||model||stage==='practice'||(m.type==='sound'&&!soundPlayer.has(m.target)),audio:heard,model,session,at:Date.now()});
+  recordResponse(p(),{band:m.band,mission:m.id,type:m.type,skill:m.skill,phase:stage,correct,supported:help||model||practiceSupport||stage==='practice'||(m.type==='sound'&&!soundPlayer.has(m.target)),audio:heard,model,session,at:Date.now()});
   save();
   if(!correct){help=true;feedback='↺ Have another go. Use Show me for a clue.';drawMission();return;}
-  if(stage==='practice'){stage='apply';reset();feedback='';drawMission();return;}
+  if(stage==='practice'){practiceSupport=true;stage='apply';reset();feedback='';drawMission();return;}
   if(stage==='apply'&&m.application){stage='transfer';reset();drawMission();return;}
   const first=finishJourneyMission(p(),m.band,m.id);save();
   shell('⭐ Mission complete',`<div class="journey-celebrate"><span>${themes.find(x=>x[0]===j().theme)?.[1]||'🤖'}</span><span>⚡</span><span>⭐</span></div><p>${escapeHtml(m.outcome||'Equipment restored!')} ${first?'A new star for this mission.':'A good replay — your star was already saved.'}</p><p class="journey-note">Finishing an adventure is separate from demonstrating a reading skill.</p><button class="btn orange" id="j-next">▶ Next mission</button><button class="btn light" id="j-band">↩ Band map</button>`);
