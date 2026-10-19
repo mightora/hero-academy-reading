@@ -21,3 +21,13 @@ Escaping is required for player names and any text interpolated into HTML. Keep 
 ## Quality gaps
 
 The current 144 items are short practice prompts, not a full sequence of 144 complete teaching lessons. There are no bundled professionally approved phoneme clips, no comprehensive alternative-pronunciation course, no specialist manual decodability signoff, and no benchmarked reading outcome data. Add these before claiming full curriculum coverage, a complete systematic synthetic phonics programme or validated reading ages.
+
+## Iteration 2 authoring files
+
+- `dist/quest-labs.js`: add curated cases using `sequence` (ordered cards), `quote` (exact contiguous word span), `compare` (two labelled source passages and evidence slots), or `claim` (supported finding, overstatement and unanswered question). All cards must be unique and each solution index must be valid. The original 12 missions per band remain in `dist/journey-content.js`, with selected IDs overlaid by authored labs.
+- `dist/lab-ui.js`: interactive cards and token selection, independent answer checking, and a simple generic worked illustration distinct from the question being assessed.
+- `dist/phonics-application.js`: short word-in-context text. Ensure the exact word occurs **once**, add any genuinely taught exception word explicitly, and keep allowed GPCs to the band scope. Machine linting is insufficient for an authorised phonics course.
+- `dist/journey.js`: records transfer after the applied response and retains support evidence. A completed mission reward is issued only after the required context activity, but never duplicates on replay.
+- `CONTENT_REVIEW.md`: required independent expert sign-off and device/accessibility testing before broader educational claims.
+
+Do not add new spellings simply to silence a validator. Instead correct the material or document and teach the planned correspondence. Version changes are deliberate and do not regrade past results.
