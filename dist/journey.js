@@ -9,7 +9,7 @@ export function missionKey(band,id){return band+'-'+String(id).padStart(2,'0');}
 export function journeyRecords(profile){return journeyFor(profile).records;}
 export function recordResponse(profile,entry){
  const j=journeyFor(profile);
- if(!selectableMission(entry.band,entry.mission)||!['sound','tiles','evidence','sequence','quote','compare','claim'].includes(entry.type)||typeof entry.skill!=='string'||entry.skill.length>80||typeof entry.correct!=='boolean'||typeof entry.supported!=='boolean'||typeof entry.audio!=='boolean'||typeof entry.model!=='boolean'||typeof entry.session!=='string'||entry.session.length>80||!Number.isFinite(entry.at)||!['practice','apply'].includes(entry.phase))throw Error('Invalid practice result');
+ if(!selectableMission(entry.band,entry.mission)||!['sound','tiles','evidence','sequence','quote','compare','claim'].includes(entry.type)||typeof entry.skill!=='string'||entry.skill.length>80||typeof entry.correct!=='boolean'||typeof entry.supported!=='boolean'||typeof entry.audio!=='boolean'||typeof entry.model!=='boolean'||typeof entry.session!=='string'||entry.session.length>80||!Number.isFinite(entry.at)||!['practice','apply','transfer'].includes(entry.phase))throw Error('Invalid practice result');
  j.records.push({version:CONTENT_VERSION,...entry});
  if(j.records.length>10000)j.records.splice(0,j.records.length-10000);
 }
