@@ -68,6 +68,7 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
  }
  function openBand(number){
   narrator.stop();soundPlayer.stop();const b=bands[number-1];if(!b)return;
+  j().startBand=number;save();
   shell(b.title,`<p class="journey-note">${escapeHtml(b.objective)}</p><button class="btn orange" id="j-start-here">★ Make this my starting point</button><div class="journey-grid">${missions.filter(m=>m.band===number).map(m=>`<button class="journey-card" data-mission="${m.id}"><span class="journey-icon">${themes.find(t=>t[0]===j().theme)?.[1]||'🤖'}</span><strong>${m.id}. ${escapeHtml(m.scene)}</strong><small>${escapeHtml(m.type==='evidence'?m.question:m.target)}</small><span>${j().completed.includes(missionKey(number,m.id))?'✓ Replay':'▶ Go'}</span></button>`).join('')}</div><p class="journey-note">Missions and stars never complete earlier bands automatically.</p>`);
   modal.querySelector('#j-start-here').onclick=()=>{j().startBand=number;save();openBand(number);};
   on('[data-mission]',b=>start(number,Number(b.dataset.mission)));
@@ -107,7 +108,7 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
  if(m.type==='tiles'){const pool=[...m.tiles];for(const g of ['s','a','t','p','i','n','sh','ch','ee','ai'])if(pool.length<m.tiles.length+2&&!m.tiles.includes(g))pool.push(g);return pool;}return [];}
  function exercise(m){
   if(m.type==='evidence')return `<p class="journey-prompt">${escapeHtml(m.question)}</p><div class="journey-sentences">${sentenceList(m.text).map((s,i)=>`<button class="journey-sentence ${selected===i?'picked':''}" data-pick="${i}" aria-pressed="${selected===i}">${escapeHtml(s)}</button>`).join('')}</div>`;
-  if(m.type==='sound')return `<p class="journey-prompt">👂 🔤 Find the sound</p><button class="btn light" id="j-sound">🔊 Sound / 🧑 Adult</button><div class="journey-tiles">${optionsFor(m).map((t,i)=>`<button class="journey-tile ${selected===i?'picked':''}" data-pick="${i}">${escapeHtml(t)}</button>`).join('')}</div>`;
+  if(m.type==='sound')return `<p class="journey-prompt">👂 🔤 Find the sound</p><button class="btn light" id="j-sound">🔊 Sound / 🧑 Adult</button><small>${soundPlayer.has(m.target)?'Tap to hear the recorded sound.':'🧑 No phoneme recording on this device: a grown-up models it.'}</small><div class="journey-tiles">${optionsFor(m).map((t,i)=>`<button class="journey-tile ${selected===i?'picked':''}" data-pick="${i}">${escapeHtml(t)}</button>`).join('')}</div>`;
   return `<p class="journey-prompt">🔊 → ▦ Build the word</p><button class="btn light" id="j-word">🔊 Hear word</button><div class="journey-slots">${m.tiles.map((g,i)=>`<span class="journey-slot">${escapeHtml(tapped[i]||'·')}</span>`).join('')}</div><div class="journey-tiles">${optionsFor(m).map((t,i)=>`<button class="journey-tile" data-tap="${i}">${escapeHtml(t)}</button>`).join('')}</div><button class="btn light" id="j-reset">↺ Reset</button>`;
  }
  function drawMission(){
