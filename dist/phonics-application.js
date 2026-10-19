@@ -51,7 +51,7 @@ export const controlledTexts={
     "a light at night.",
     "bright light.",
     "a boat on a pond.",
-    "a road in a town.",
+    "a road in a park.",
     "a moon in the night.",
     "a star in the dark.",
     "a coin in a bag.",
