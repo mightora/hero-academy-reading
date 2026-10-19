@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "2026.10.19-draft1",
+  "status": "human-review-required",
+  "recordingPolicy": "Bundled pure-phoneme clips: none. Locally supplied adult recordings are held in IndexedDB, per device; their presence is shown in Grown-ups.",
+  "deviceNarration": "Optional Web Speech API whole words and passages only. No external voice-service integration detected in this repository; no client-side credentials.",
+  "licence": "Any future bundled recording needs explicit rights and recorded phonics/language review.",
+  "phonemes": [
+    {
+      "id": "a",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "ai",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "air",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "ar",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "b",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "ch",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "d",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "e",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "ear",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "ee",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "f",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "g",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "h",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "i",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "igh",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "k",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "l",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "m",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "n",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "ng",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "o",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "oa",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "oi",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "oo",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "or",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "ow",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "p",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "r",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "s",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "sh",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "t",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "th",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "u",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "ur",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    },
+    {
+      "id": "ure",
+      "publicPath": null,
+      "bundled": false,
+      "adultRecordingSupported": true,
+      "reviewed": false
+    }
+  ],
+  "missingBundledPhonemes": [
+    "a",
+    "ai",
+    "air",
+    "ar",
+    "b",
+    "ch",
+    "d",
+    "e",
+    "ear",
+    "ee",
+    "f",
+    "g",
+    "h",
+    "i",
+    "igh",
+    "k",
+    "l",
+    "m",
+    "n",
+    "ng",
+    "o",
+    "oa",
+    "oi",
+    "oo",
+    "or",
+    "ow",
+    "p",
+    "r",
+    "s",
+    "sh",
+    "t",
+    "th",
+    "u",
+    "ur",
+    "ure"
+  ]
+}
