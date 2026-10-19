@@ -634,14 +634,14 @@ export const labMissions=[
     "source": "A supplier tested four batteries. Three lasted ten hours and one lasted eight. No other brands were tested.",
     "question": "Sort the supported detail, the overstatement and the missing information.",
     "cards": [
-      "Three reached ten hours.",
       "All batteries always last exactly ten hours.",
-      "How long do other brands last?"
+      "How long do other brands last?",
+      "Three reached ten hours."
     ],
     "solution": [
+      2,
       0,
-      1,
-      2
+      1
     ],
     "slots": [
       "Evidence supports",
@@ -660,14 +660,14 @@ export const labMissions=[
     "source": "A trial with 20 adult cyclists found few hazards in daylight. No children took part and the route was not studied after dark.",
     "question": "What can and cannot be concluded from the trial?",
     "cards": [
-      "Adults reported few daytime hazards.",
       "Safe for every person at all times.",
-      "What happens after dark for children?"
+      "What happens after dark for children?",
+      "Adults reported few daytime hazards."
     ],
     "solution": [
+      2,
       0,
-      1,
-      2
+      1
     ],
     "slots": [
       "Evidence supports",
@@ -686,14 +686,14 @@ export const labMissions=[
     "source": "A single water sample had low nitrate levels. The test did not measure plastics or bacteria.",
     "question": "Separate the measurement from the headline.",
     "cards": [
-      "Nitrate was low in one sample.",
       "No kind of pollution exists in the lake.",
-      "Were bacteria or plastics present?"
+      "Were bacteria or plastics present?",
+      "Nitrate was low in one sample."
     ],
     "solution": [
+      2,
       0,
-      1,
-      2
+      1
     ],
     "slots": [
       "Evidence supports",
@@ -712,14 +712,14 @@ export const labMissions=[
     "source": "A questionnaire was answered by twelve visitors. Eight liked the shorter tour, while four preferred the longer one.",
     "question": "What is the accurate claim and what still needs checking?",
     "cards": [
-      "Eight of twelve preferred the short tour.",
       "Every visitor preferred the short tour.",
-      "Would other groups choose the same?"
+      "Would other groups choose the same?",
+      "Eight of twelve preferred the short tour."
     ],
     "solution": [
+      2,
       0,
-      1,
-      2
+      1
     ],
     "slots": [
       "Evidence supports",
@@ -738,14 +738,14 @@ export const labMissions=[
     "source": "During a demonstration, it sorted 49 out of 50 parcels correctly. Its performance with damaged labels was not tested.",
     "question": "Distinguish performance data from advertising.",
     "cards": [
-      "It sorted 49 parcels correctly.",
       "It never makes a sorting mistake.",
-      "How does it handle damaged labels?"
+      "How does it handle damaged labels?",
+      "It sorted 49 parcels correctly."
     ],
     "solution": [
+      2,
       0,
-      1,
-      2
+      1
     ],
     "slots": [
       "Evidence supports",
@@ -764,14 +764,14 @@ export const labMissions=[
     "source": "Surveyors recorded more saplings in two monitored plots than last year. They did not visit the rest of the forest.",
     "question": "What conclusion fits the surveyed evidence?",
     "cards": [
-      "Two plots had more saplings.",
       "Recovery across the entire forest is proven.",
-      "What happened in unvisited areas?"
+      "What happened in unvisited areas?",
+      "Two plots had more saplings."
     ],
     "solution": [
+      2,
       0,
-      1,
-      2
+      1
     ],
     "slots": [
       "Evidence supports",
