@@ -106,6 +106,16 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
   if(m.type==='sound')return `<p class="journey-model"><span class="journey-tile">${escapeHtml(m.target)}</span></p><small>Grown-up: model the pure phoneme. Do not use the letter name.</small>`;
   return `<blockquote class="journey-passage">${sentenceList(m.text).map((s,i)=>`<span class="${i===m.evidence?'journey-evidence':''}">${escapeHtml(s)} </span>`).join('')}</blockquote><small>The highlighted sentence is one possible evidence location.</small>`;
  }
+ function lessonIntro(m){
+  if(isLab(m))return labIntro(m);
+  if(m.type==='evidence')return '<div class="journey-preview">Example: “Pip saw rain. He took a coat.” Why a coat? Find “Pip saw rain.”</div>';
+  if(m.type==='sound')return '<div class="journey-preview">👂 A grown-up models one sound → 🔤 tap its spelling. No letter names.</div>';
+  if(m.type==='tiles'){
+   const demonstration=m.band===2?(m.target==='sat'?'p · i · n → pin':'s · a · t → sat'):m.band===3?(m.target==='cat'?'d · o · g → dog':'c · a · t → cat'):m.band===4?(m.target==='ship'?'ch · i · n → chin':'sh · i · p → ship'):m.band===5?(m.target==='rain'?'b · oa · t → boat':'r · ai · n → rain'):'re · play → replay';
+   return '<div class="journey-preview">Example: <strong>'+escapeHtml(demonstration)+'</strong>. Tap the sound or meaning tiles in order.</div>';
+  }
+  return modelBody(m);
+ }
  function optionsFor(m){if(m.type==='sound')return [...new Set([m.target,...['s','a','m','p','t','i','n','d','g','o','c','k'].filter(x=>x!==m.target).slice(0,3)])].slice(0,4);
  if(m.type==='tiles'){const pool=[...m.tiles];for(const g of ['s','a','t','p','i','n','sh','ch','ee','ai'])if(pool.length<m.tiles.length+2&&!m.tiles.includes(g))pool.push(g);return pool;}return [];}
  function exercise(m){
@@ -117,7 +127,7 @@ export function createJourney({modal,showDialog,dialogHead,closeDialog,profile,s
  }
  function drawMission(){
   const m=current,b=bands[m.band-1],theme=themes.find(x=>x[0]===j().theme);
-  shell(m.scene,`<div class="journey-mission"><div class="journey-adventure" aria-hidden="true"><span>${theme?.[1]||'🤖'}</span><span>→</span><span>⚡</span><span>→</span><span>⭐</span></div><p class="journey-note">${escapeHtml(b.title)} · ${m.id} / 12 · ${stage==='show'?'Show me':stage==='practice'?'Practise together':stage==='transfer'?'Use it in a message':'Do the mission'}</p>${stage==='show'? `<div class="journey-visual">${escapeHtml(m.example)}<div>${isLab(m)?labIntro(m):modelBody(m)}</div></div><button class="btn light" id="j-model-audio">🔊 Hear example</button><div class="journey-actions"><button class="btn orange" id="j-practice">▶ Practise</button><button class="btn light" id="j-independent">Skip help → Try</button></div>`:`<div class="journey-visual">${stage==='practice'||help?modelBody(m):''}</div>${exercise(m)}<p class="journey-feedback" role="status">${escapeHtml(feedback)}</p><div class="journey-actions"><button class="btn light" id="j-help">☝ Show me</button><button class="btn orange" id="j-check">✓ Check</button></div>`}</div>`);
+  shell(m.scene,`<div class="journey-mission"><div class="journey-adventure" aria-hidden="true"><span>${theme?.[1]||'🤖'}</span><span>→</span><span>⚡</span><span>→</span><span>⭐</span></div><p class="journey-note">${escapeHtml(b.title)} · ${m.id} / 12 · ${stage==='show'?'Show me':stage==='practice'?'Practise together':stage==='transfer'?'Use it in a message':'Do the mission'}</p>${stage==='show'? `<div class="journey-visual">${escapeHtml(m.example)}<div>${lessonIntro(m)}</div></div><button class="btn light" id="j-model-audio">🔊 Hear example</button><div class="journey-actions"><button class="btn orange" id="j-practice">▶ Practise</button><button class="btn light" id="j-independent">Skip help → Try</button></div>`:`<div class="journey-visual">${stage==='practice'||help?modelBody(m):''}</div>${exercise(m)}<p class="journey-feedback" role="status">${escapeHtml(feedback)}</p><div class="journey-actions"><button class="btn light" id="j-help">☝ Show me</button><button class="btn orange" id="j-check">✓ Check</button></div>`}</div>`);
   if(stage==='show'){
    modal.querySelector('#j-model-audio').onclick=()=>m.type==='sound'?playSound(m.target):voice(m.type==='tiles'?m.target:isLab(m)?labSpokenText(m):m.text);
    modal.querySelector('#j-practice').onclick=()=>{stage='practice';reset();model=true;drawMission();};
