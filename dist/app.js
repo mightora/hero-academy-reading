@@ -8,6 +8,7 @@ import {missions,districts,rewards,curriculum,levelDetails,correctAnswer,validat
 import {colours,freshProfile,initialState,validateSave,isUnlocked,completeMission} from './state.js';
 import {icon,hero,robot,city,pictureSteps} from './art.js';
 import {createJourney,journeyDashboard} from './journey.js';
+import {bootAcademy} from './academy-client.js';
 validateContent();
 const KEY='hero-academy-v1';let state=initialState(),storageOK=true;
 try{const raw=localStorage.getItem(KEY);if(raw)state=validateSave(JSON.parse(raw));}catch{storageOK=false;}
@@ -124,4 +125,17 @@ window.speechSynthesis?.addEventListener?.('voiceschanged',()=>{if(view==='paren
 document.addEventListener('keydown',e=>{if(view!=='map'||modal.firstChild||e.altKey||e.ctrlKey||e.metaKey||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))return;const direction={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'}[e.key];if(direction){e.preventDefault();stepHero(direction);}});
 render();if(!state.welcomed)welcome();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+// One selected local profile maps to one family hero; sibling saves never leave
+// this device as part of another hero's snapshot.
+const academyAccount = await bootAcademy({
+ game:'reading',
+ identity:()=>{if(!p().academyLocalId){p().academyLocalId=crypto.randomUUID();save();}return p().academyLocalId;},
+ select:id=>{const i=state.profiles.findIndex(p=>p.academyLocalId===id);if(i<0)return false;closeDialog();state.active=i;run=null;view='map';save();render();return true;},
+ create:h=>{if(state.profiles.length>=8)throw Error('This device has eight heroes. Export a backup before adding another.');const profile=freshProfile(h.name.slice(0,24));profile.academyLocalId=crypto.randomUUID();profile.colour=h.colour.toLowerCase();profile.emblem=h.emblem;state.profiles.push(profile);state.active=state.profiles.length-1;state.welcomed=true;closeDialog();save();render();return profile.academyLocalId;},
+ snapshot:()=>{const profile=structuredClone(p());delete profile.academyLocalId;profile.attempts=profile.attempts.slice(-300);profile.journey.records=profile.journey.records.slice(-300);return {version:2,profile,settings:structuredClone(state.settings)};},
+ restore:remote=>{const safe=validateSave({version:remote.version,active:0,profiles:[remote.profile],settings:remote.settings,welcomed:true});const id=p().academyLocalId;state.profiles[state.active]={...safe.profiles[0],academyLocalId:id};state.settings=safe.settings;view='map';run=null;closeDialog();save();applySettings();render();},
+ milestones:()=>[...new Set([...p().done.map(n=>n-1),...p().journey.completed.map(key=>{const [band,n]=key.split('-').map(Number);return 12+(band-1)*12+n-1;})])],
+});
+
 
